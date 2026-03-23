@@ -1,0 +1,111 @@
+import React from 'react'
+import { useState } from 'react'
+import {motion} from 'framer-motion'
+import { useMutation,useQueryClient } from '@tanstack/react-query'
+import { createTask } from '../../services/task.services.js'
+import toast from 'react-hot-toast'
+
+
+function CreateTaskModel({projectid,onClose}) {
+    const[title,setTitle] = useState("");
+    const[description,setDescription] = useState("");
+    const[status,setStatus] = useState("todo"); 
+    const queryClient = useQueryClient();
+
+    const mutation =useMutation({
+        mutationFn: ({ projectId, ...taskData }) =>
+         createTask(projectId, taskData),
+        onSuccess:()=>{
+            toast.success("Task created successfully");
+
+            queryClient.invalidateQueries({queryKey:["tasks", projectid]});
+            onClose();
+        },
+
+        onError:()=>{
+            toast.error("Failed to create task");
+        }
+    });
+
+    const handleSubmit =(e)=>{
+        e.preventDefault();
+        mutation.mutate({
+            projectId: projectid,
+            title,
+            description,
+            status
+        });
+    }
+return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md"
+      >
+
+        <h2 className="text-xl font-semibold mb-4">
+          Create Task
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Title */}
+          <input
+            type="text"
+            placeholder="Task title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border p-2 rounded"
+            required
+          />
+
+          {/* Description */}
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          {/* Status */}
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full border p-2 rounded "
+          >
+            <option value="todo">Todo</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3">
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border rounded"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
+              {mutation.isPending ? "Creating..." : "Create"}
+            </button>
+
+          </div>
+
+        </form>
+
+      </motion.div>
+
+    </div>
+  );
+}
+
+export default CreateTaskModel

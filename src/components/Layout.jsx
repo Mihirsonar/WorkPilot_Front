@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
 import React from "react";
 import Navbar from "./Navbar";
-import Sidebar from "./sidebar";
+import Sidepanel from "./Sidepanel";
 
 export default function MainLayout() {
   return (
     <div className="flex h-screen bg-gray-50">
 
-      <Sidebar />
+      <Sidepanel />
 
       <div className="flex flex-col flex-1">
 

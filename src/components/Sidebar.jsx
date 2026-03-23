@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Link } from "react-router-dom";
 
-export default function Sidebar() {
+export default function sidebar() {
   return (
     <aside className="w-60 bg-white border-r p-4">
 

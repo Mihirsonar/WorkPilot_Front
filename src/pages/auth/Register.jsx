@@ -22,7 +22,7 @@ const Register = () => {
       console.log("Registration successful:", data);
         localStorage.setItem("accessToken", data.data.accessToken);
         toast.success("Registration successful 🎉");
-        navigate("/login");
+        navigate("/");
   } catch (error) {
     toast.error(error?.response?.data?.message || "Registration failed");
   } finally {

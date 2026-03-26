@@ -12,5 +12,5 @@ export const registerUser = async (data) => {
 };
 
 export const logoutUser = () => {
-  localStorage.removeItem("token");
+  localStorage.removeItem("accessToken");
 };

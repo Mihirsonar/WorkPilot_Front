@@ -19,10 +19,10 @@ const Register = () => {
     try {
 
       const data = await registerUser({ email, username, password });
-      console.log("Registration successful:", data);
-        localStorage.setItem("accessToken", data.data.accessToken);
+      // console.log("Registration successful:", data);
+      //   localStorage.setItem("accessToken", data.data.accessToken);
         toast.success("Registration successful 🎉");
-        navigate("/");
+        navigate("/login");
   } catch (error) {
     toast.error(error?.response?.data?.message || "Registration failed");
   } finally {

@@ -65,6 +65,9 @@ const handleSubmit = async (e) => {
           <div>
             <label className="text-sm font-medium text-gray-600">
               Email
+              <placeholder>
+                Head1@wp.com
+              </placeholder>
             </label>
 
             <motion.input
@@ -83,6 +86,9 @@ const handleSubmit = async (e) => {
           <div>
             <label className="text-sm font-medium text-gray-600">
               Password
+              <placeholder>
+                123321     
+              </placeholder>
             </label>
 
             <motion.input

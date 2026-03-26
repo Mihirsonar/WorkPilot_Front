@@ -1,30 +1,49 @@
 import React from 'react'
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {motion} from 'framer-motion';
+import { motion } from "framer-motion";
 
-function TaskCard({ task }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+function TaskCard({ task, isDragging, onClick }) {
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable({
     id: String(task._id)
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform)
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1
   };
 
   return (
     <motion.div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
       style={style}
-      whileHover={{scale:1.04}}
-      whileTap={{scale:0.97}}
-      className="bg-white p-3 rounded shadow cursor-grab active:cursor-grabbing transition-transform duration-100"
+      onClick={() => onClick(task)}
+      whileHover={{ scale: 1.03 }}
+      className="bg-white p-3 rounded shadow flex justify-between items-center"
     >
-      <h3 className="font-semibold">{task.title}</h3>
-      <p className="text-sm text-gray-600">{task.description}</p>
-        
+
+      {/* Clickable Content */}
+      <div className="flex-1 cursor-pointer">
+        <h4 className="font-medium">{task.title}</h4>
+      </div>
+
+      {/* Drag Handle ONLY */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab px-2 text-gray-400"
+      >
+        ⋮
+      </div>
+
     </motion.div>
   );
 }

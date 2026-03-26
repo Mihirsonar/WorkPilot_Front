@@ -65,9 +65,6 @@ const handleSubmit = async (e) => {
           <div>
             <label className="text-sm font-medium text-gray-600">
               Email
-              <placeholder>
-                Head1@wp.com
-              </placeholder>
             </label>
 
             <motion.input
@@ -76,7 +73,7 @@ const handleSubmit = async (e) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none transition"
-              placeholder="Enter your email"
+              placeholder="Head1@wp.com"
               required
             />
           </div>
@@ -86,9 +83,7 @@ const handleSubmit = async (e) => {
           <div>
             <label className="text-sm font-medium text-gray-600">
               Password
-              <placeholder>
-                123321     
-              </placeholder>
+
             </label>
 
             <motion.input
@@ -97,7 +92,7 @@ const handleSubmit = async (e) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none transition"
-              placeholder="Enter your password"
+              placeholder="123321"
               required
             />
           </div>

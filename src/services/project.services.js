@@ -20,4 +20,14 @@ import {api} from "./api.js";
     }
 };
 
-export { getProjects, getProjectById };
+    const getProjectMembers = async (projectId)=>{
+        try {  
+            const res = await api.get(`/projects/${projectId}/members`);
+            return res.data.data;
+        } catch (error) {
+         console.error(`Error While fetching Members`,error);
+        }
+
+    }
+
+export { getProjects, getProjectById ,getProjectMembers};

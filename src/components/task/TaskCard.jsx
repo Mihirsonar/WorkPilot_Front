@@ -44,6 +44,17 @@ function TaskCard({ task, isDragging, onClick }) {
         ⋮
       </div>
 
+      {task.assignedTo && (
+  <div className="mt-2 flex items-center gap-2">
+    <div className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs flex items-center justify-center">
+      {task.assignedTo.username?.charAt(0)}
+    </div>
+    <span className="text-xs text-gray-500">
+      {task.assignedTo.username}
+    </span>
+  </div>
+)}
+
     </motion.div>
   );
 }

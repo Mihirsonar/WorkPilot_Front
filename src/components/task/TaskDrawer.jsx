@@ -1,16 +1,26 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTask } from "../../services/task.services";
+import {getProjectMembers} from "../../services/project.services.js"
 import toast from "react-hot-toast";
 
 function TaskDrawer({ task, onClose, projectId }) {
 
+  const{  data: members = [] } = useQuery({
+    queryKey : ["members",projectId],
+    queryFn : () => getProjectMembers(projectId)
+  })
+
   const [form, setForm] = useState({
     title: "",
     description: "",
-    status: ""
+    status: "todo",
+    assignedTo: "",
+    dueDate: "",
+
   });
 
   const queryClient = useQueryClient();
@@ -20,7 +30,9 @@ function TaskDrawer({ task, onClose, projectId }) {
       setForm({
         title: task.title || "",
         description: task.description || "",
-        status: task.status || "todo"
+        status: task.status || "todo",
+        assignedTo: task.assignedTo || "",
+        dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
       });
     }
   }, [task]);
@@ -33,27 +45,19 @@ function TaskDrawer({ task, onClose, projectId }) {
         queryKey: ["tasks", projectId]
       });
 
-      const previous = queryClient.getQueryData([
-        "tasks",
-        projectId
-      ]);
+      const previous = queryClient.getQueryData(["tasks", projectId]);
 
-      queryClient.setQueryData(
-        ["tasks", projectId],
-        (old = []) =>
-          old.map((t) =>
-            t._id === taskId ? { ...t, ...data } : t
-          )
+      queryClient.setQueryData(["tasks", projectId], (old = []) =>
+        old.map((t) =>
+          t._id === taskId ? { ...t, ...data } : t
+        )
       );
 
       return { previous };
     },
 
     onError: (err, variables, context) => {
-      queryClient.setQueryData(
-        ["tasks", projectId],
-        context.previous
-      );
+      queryClient.setQueryData(["tasks", projectId], context.previous);
       toast.error("Update failed");
     },
 
@@ -82,27 +86,22 @@ function TaskDrawer({ task, onClose, projectId }) {
 
   return (
     <>
-      <div
-        onClick={onClose}
-        className="fixed inset-0 bg-black/30 z-40"
-      />
+      <div onClick={onClose} className="fixed inset-0 bg-black/30 z-40" />
 
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
-        exit={{ x: "100%" }}
-        className="fixed right-0 top-0 h-full w-[400px] bg-white z-50 shadow-xl p-6 flex flex-col"
+        className="fixed right-0 top-0 h-full w-[420px] bg-white z-50 shadow-xl p-6 flex flex-col overflow-y-auto"
       >
 
-        <h2 className="text-xl font-semibold mb-4">
-          Task Details
-        </h2>
+        <h2 className="text-xl font-semibold mb-4">Task Details</h2>
 
         <input
           name="title"
           value={form.title}
           onChange={handleChange}
           className="w-full border p-2 rounded mb-3"
+          placeholder="Title"
         />
 
         <textarea
@@ -110,6 +109,7 @@ function TaskDrawer({ task, onClose, projectId }) {
           value={form.description}
           onChange={handleChange}
           className="w-full border p-2 rounded mb-3"
+          placeholder="Description"
         />
 
         <select
@@ -122,6 +122,51 @@ function TaskDrawer({ task, onClose, projectId }) {
           <option value="in_progress">In Progress</option>
           <option value="done">Done</option>
         </select>
+
+        <input
+          type="date"
+          name="dueDate"
+          value={form.dueDate}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+
+
+<div className="mb-4">
+  <label className="text-sm text-gray-500">Assign User</label>
+
+  <div className="mt-2 border rounded p-2 space-y-2 max-h-40 overflow-y-auto">
+
+    {members.map((m) => {
+      const user = m.user;
+      const isSelected = form.assignedTo === user._id;
+
+      return (
+        <div
+          key={user._id}
+          onClick={() =>
+            setForm({ ...form, assignedTo: user._id })
+          }
+          className={`flex items-center gap-3 p-2 rounded cursor-pointer transition
+            ${isSelected ? "bg-indigo-100" : "hover:bg-gray-100"}`}
+        >
+
+          {/* Avatar */}
+          <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-sm font-semibold">
+            {user.username?.charAt(0).toUpperCase()}
+          </div>
+
+          {/* Name */}
+          <span className="text-sm font-medium">
+            {user.username}
+          </span>
+
+        </div>
+      );
+    })}
+
+  </div>
+</div>
 
         <div className="mt-auto flex gap-3">
           <button

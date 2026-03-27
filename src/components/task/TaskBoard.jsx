@@ -157,6 +157,7 @@ function TaskBoard({ projectId }) {
       {selectedTask && (
         <TaskDrawer
           task={selectedTask}
+          projectId={projectId}
           onClose={() => setSelectedTask(null)}
         />
       )}

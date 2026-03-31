@@ -13,14 +13,17 @@ export const createTask = async (projectId, taskData) => {
   try {
     const response = await api.post(`/projects/${projectId}/tasks`, taskData);
     return response.data;
+    // console.log(response.data)
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to create task");
+    throw new Error(error, "Failed to create task");
   }
 };
 
 export const updateTask = async ({projectId, taskId, status}) => {
   const response = await api.patch(`/projects/${projectId}/tasks/${taskId}`,{status});
+  // console.log(response.data);
   return response.data;
+  
 };
 
 export const deleteTask = async (taskId) => {

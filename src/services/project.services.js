@@ -30,15 +30,14 @@ import {api} from "./api.js";
 
     }
 
-const getUsers = async ()=>{
-     try {  
-            const res = await api.get(`/users`);
-            // console.log(res.data)
-          return res.data.users;
-        } catch (error) {
-         console.error(`Error While fetching USers`,error);
-        }
-
-}
+const getUsers = async () => {
+  try {  
+    const res = await api.get(`/users`);
+    return res.data.users || [];
+  } catch (error) {
+    console.error(`Error While fetching Users`, error);
+    return []; // ✅ VERY IMPORTANT
+  }
+};
 
 export { getProjects, getProjectById ,getProjectMembers,getUsers};

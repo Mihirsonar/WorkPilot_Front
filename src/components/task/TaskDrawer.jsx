@@ -37,6 +37,7 @@ function TaskDrawer({ task, onClose, projectId }) {
     }
   }, [task]);
 
+
   const mutation = useMutation({
     mutationFn: updateTask,
 
@@ -52,7 +53,7 @@ function TaskDrawer({ task, onClose, projectId }) {
           t._id === taskId ? { ...t, ...data } : t
         )
       );
-
+      
       return { previous };
     },
 
@@ -159,8 +160,7 @@ function TaskDrawer({ task, onClose, projectId }) {
           {/* Name */}
           <span className="text-sm font-medium">
             {user.username}
-          </span>
-
+          </span>            
         </div>
       );
     })}

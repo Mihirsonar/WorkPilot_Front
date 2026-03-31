@@ -1,53 +1,67 @@
-import React from 'react'
-import { useState } from 'react'
-import {motion} from 'framer-motion'
-import { useMutation,useQueryClient } from '@tanstack/react-query'
-import { createTask } from '../../services/task.services.js'
-import toast from 'react-hot-toast'
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { createTask } from '../../services/task.services.js';
+import { getUsers } from '../../services/project.services.js'
+import toast from 'react-hot-toast';
 
+function CreateTaskModel({ projectId, onClose }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("todo");
+  const [assignedTo, setAssignedTo] = useState("");
 
-function CreateTaskModel({projectid,onClose}) {
-    const[title,setTitle] = useState("");
-    const[description,setDescription] = useState("");
-    const[status,setStatus] = useState("todo"); 
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    const mutation =useMutation({
-        mutationFn: ({ projectId, ...taskData }) =>
-         createTask(projectId, taskData),
-        onSuccess:()=>{
-            toast.success("Task created successfully");
+  // ✅ Fetch users using your service
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+    staleTime: 1000 * 60 * 5 // ✅ cache for 5 min
+  });
 
-            queryClient.invalidateQueries({queryKey:["tasks", projectid]});
-            onClose();
-        },
+  // ✅ Mutation
+  const mutation = useMutation({
+    mutationFn: ({ projectId, ...taskData }) =>
+      createTask(projectId, taskData),
 
-        onError:()=>{
-            toast.error("Failed to create task");
-        }
-    });
+    onSuccess: () => {
+      toast.success("Task created successfully");
+      queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
+      onClose();
+    },
 
-    const handleSubmit =(e)=>{
-        e.preventDefault();
-        mutation.mutate({
-            projectId: projectid,
-            title,
-            description,
-            status
-        });
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to create task");
     }
-return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+  });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!assignedTo) {
+      toast.error("Please assign task to a user");
+      return;
+    }
+
+    mutation.mutate({
+      projectId,
+      title,
+      description,
+      status,
+      assignedTo
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md"
       >
-
-        <h2 className="text-xl font-semibold mb-4">
-          Create Task
-        </h2>
+        <h2 className="text-xl font-semibold mb-4">Create Task</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -73,16 +87,33 @@ return (
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full border p-2 rounded "
+            className="w-full border p-2 rounded"
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
             <option value="done">Done</option>
           </select>
 
+          {/* ✅ Assign User */}
+          {isLoading ? (
+            <div className="text-sm text-gray-500">Loading users...</div>
+          ) : (
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className="w-full border p-2 rounded"
+            >
+              <option value="">Select User</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
+          )}
+
           {/* Actions */}
           <div className="flex justify-end gap-3">
-
             <button
               type="button"
               onClick={onClose}
@@ -97,15 +128,12 @@ return (
             >
               {mutation.isPending ? "Creating..." : "Create"}
             </button>
-
           </div>
 
         </form>
-
       </motion.div>
-
     </div>
   );
 }
 
-export default CreateTaskModel
+export default CreateTaskModel;

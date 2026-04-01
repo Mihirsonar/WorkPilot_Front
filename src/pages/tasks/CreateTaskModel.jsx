@@ -103,7 +103,7 @@ function CreateTaskModel({ projectId, onClose }) {
               onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full border p-2 rounded"
             >
-              <option value="">Select User</option>
+              <option value="">Assignee</option>
               {users.map((user) => (
                 <option key={user._id} value={user._id}>
                   {user.username}

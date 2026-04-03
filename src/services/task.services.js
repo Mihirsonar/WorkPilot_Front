@@ -19,11 +19,12 @@ export const createTask = async (projectId, taskData) => {
   }
 };
 
-export const updateTask = async ({projectId, taskId, status}) => {
-  const response = await api.patch(`/projects/${projectId}/tasks/${taskId}`,{status});
-  // console.log(response.data);
+export const updateTask = async ({ projectId, taskId, ...data }) => {
+  const response = await api.patch(
+    `/projects/${projectId}/tasks/${taskId}`,
+    data
+  );
   return response.data;
-  
 };
 
 export const deleteTask = async (taskId) => {

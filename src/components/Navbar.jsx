@@ -1,6 +1,13 @@
-import React from 'react'
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "../services/auth.service";
 
 export default function Navbar() {
+  const { data: username, isLoading, error } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+  });
+
   return (
     <header className="bg-white border-b px-6 py-3 flex justify-between">
 
@@ -10,7 +17,13 @@ export default function Navbar() {
       />
 
       <div>
-        👤 Mihir
+        👤 {
+          error
+            ? "Error"
+            : isLoading
+            ? "Loading..."
+            : username || "Guest"
+        }
       </div>
 
     </header>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Sidepanel() {
     return (
-    <aside className="w-60 bg-white border-r p-4">
+    <aside className="w-40 bg-white border-r p-4">
 
       <h1 className="text-xl font-bold text-indigo-600 mb-6">
         WorkPilot

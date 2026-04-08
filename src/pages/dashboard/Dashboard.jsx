@@ -1,6 +1,7 @@
 import React from 'react'
 import {useQuery} from "@tanstack/react-query";
 import {getProjects} from "../../services/project.services.js";
+import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const { data: projects } = useQuery({
@@ -18,9 +19,9 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-4 gap-4">
 
-        <div className="bg-white p-4 rounded shadow">
+             <Link to="/projects" className="bg-white p-4 rounded shadow">
           Total Projects: {projects ? projects.length : 'Loading...'}
-        </div>
+        </Link>
 
         <div className="bg-white p-4 rounded shadow">
           My Tasks

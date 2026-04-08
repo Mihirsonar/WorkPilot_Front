@@ -14,3 +14,9 @@ export const registerUser = async (data) => {
 export const logoutUser = () => {
   localStorage.removeItem("accessToken");
 };
+
+export const getCurrentUser = async () => {
+  const response = await api.get("auth/current")
+  // console.log(response.data.message.username);
+  return response.data.message.username;
+}

@@ -40,4 +40,25 @@ const getUsers = async () => {
   }
 };
 
-export { getProjects, getProjectById ,getProjectMembers,getUsers};
+const deleteProject = async (projectId) => {
+  try {
+    const response = await api.delete(`/projects/${projectId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting project with ID ${projectId}:`, error);
+    throw error;
+  }
+};
+
+const updateProject = async (projectId, data) => {
+  try {
+    const response = await api.put(`/projects/${projectId}`, data); 
+    return response.data;
+  }
+    catch (error) {
+    console.error(`Error updating project with ID ${projectId}:`, error);
+    throw error;
+  }
+};
+
+export { getProjects, getProjectById ,getProjectMembers,getUsers,deleteProject,updateProject};

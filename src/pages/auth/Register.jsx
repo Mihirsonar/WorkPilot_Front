@@ -90,6 +90,18 @@ const Register = () => {
             >
                 {loading ? "Signing up..." : "Register"}
             </motion.button>
+
+                    <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center text-sm text-gray-500 mt-6"
+        >
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600 cursor-pointer hover:underline">
+            Log in
+          </Link>
+        </motion.p>
         </form>
       </motion.div>
     </div>

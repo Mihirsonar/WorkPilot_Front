@@ -85,7 +85,7 @@ function Sidepanel() {
         </nav>
 
         {/* Workspace Card */}
-        <div className="mt-10 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 p-5 relative overflow-hidden">
+        {/* <div className="mt-10 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 p-5 relative overflow-hidden">
           <div className="absolute top-0 right-0 h-28 w-28 bg-white/10 rounded-full blur-2xl" />
 
           <h2 className="text-lg font-semibold relative z-10">
@@ -99,43 +99,28 @@ function Sidepanel() {
           <button className="mt-5 w-full bg-white text-indigo-700 font-semibold py-2.5 rounded-xl hover:scale-[1.02] transition-all duration-300">
             Upgrade Plan
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom */}
       <div className="space-y-3">
         <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-300 hover:bg-white/5 hover:text-white transition-all duration-300">
           <Settings size={20} />
-          <span className="text-sm font-medium">
-            Settings
-          </span>
+          <Link to="/settings">
+            <span className="text-sm font-medium">
+              Settings
+            </span>
+          </Link>
         </button>
 
         <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all duration-300">
           <LogOut size={20} />
-          <span className="text-sm font-medium">
-            Logout
-          </span>
+          <Link to="/login">
+            <span className="text-sm font-medium">
+              Logout
+            </span>
+          </Link>
         </button>
-
-        {/* User Profile */}
-        {/* <div className="mt-5 border border-white/10 bg-white/5 rounded-2xl p-4 flex items-center gap-3">
-          <img
-            src="https://i.pravatar.cc/100"
-            alt="user"
-            className="h-12 w-12 rounded-full object-cover"
-          />
-
-          <div>
-            <h3 className="font-semibold text-sm">
-              Mihir Sonar
-            </h3>
-
-            <p className="text-xs text-slate-400">
-              Frontend Developer
-            </p>
-          </div>
-        </div> */}
       </div>
     </aside>
   );

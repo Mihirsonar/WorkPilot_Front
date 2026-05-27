@@ -9,12 +9,14 @@ import MyTasks from "../pages/tasks/MyTasks";
 import ProtectedRoute from "../components/project/ProtectedRoute";
 import ProjectDetails from "../pages/projects/projectDetails";
 import CreateProjectModel from "../components/project/CreateProjectModel";
+import SettingsPage from "../pages/SettingsPage";
 export default function Router(){
     return(
         <BrowserRouter>
         <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register />} />
+            <Route path="/settings" element={<SettingsPage />} />   
             <Route element={<Layout/>}>
         <Route
         path="/"
@@ -27,7 +29,7 @@ export default function Router(){
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/my-tasks" element={<MyTasks />} />  
                 <Route path="/create-project" element={<CreateProjectModel />} /> 
-                <Route path ="/projects/:projectId" element={<ProjectDetails />} />    
+                <Route path ="/projects/:projectId" element={<ProjectDetails />} /> 
             </Route>
         </Routes>
         </BrowserRouter>

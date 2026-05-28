@@ -72,7 +72,7 @@ const Register = () => {
         "Registration successful 🎉"
       );
 
-      navigate("/login");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(
         error?.response?.data

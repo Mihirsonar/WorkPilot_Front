@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -8,9 +8,16 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
+import { logoutUser } from "../services/auth.service";
 
 function Sidepanel() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login", { replace: true });
+  };
 
   const navItems = [
     {
@@ -104,22 +111,20 @@ function Sidepanel() {
 
       {/* Bottom */}
       <div className="space-y-3">
-        <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-300 hover:bg-white/5 hover:text-white transition-all duration-300">
+        <Link
+          to="/settings"
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-300 hover:bg-white/5 hover:text-white transition-all duration-300"
+        >
           <Settings size={20} />
-          <Link to="/settings">
-            <span className="text-sm font-medium">
-              Settings
-            </span>
-          </Link>
-        </button>
+          <span className="text-sm font-medium">Settings</span>
+        </Link>
 
-        <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all duration-300">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all duration-300"
+        >
           <LogOut size={20} />
-          <Link to="/login">
-            <span className="text-sm font-medium">
-              Logout
-            </span>
-          </Link>
+          <span className="text-sm font-medium">Logout</span>
         </button>
       </div>
     </aside>

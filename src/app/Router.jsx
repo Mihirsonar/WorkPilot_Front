@@ -17,7 +17,7 @@ export default function Router(){
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register />} />
             <Route path="/settings" element={<SettingsPage />} />   
-            <Route element={<Layout/>}>
+            <Route element={<ProtectedRoute><Layout/></ProtectedRoute>}>
         <Route
         path="/"
         element={

@@ -1,7 +1,10 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProjects } from "../../services/project.services.js";
+import { createProject } from "../../services/createProject.service.js";
+import CreateProjectModel from "../../components/project/CreateProjectModel";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   FolderKanban,
   CheckCircle2,
@@ -11,12 +14,31 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data: projects, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
   });
 
+  const { mutate: createMutate, isPending } = useMutation({
+    mutationFn: createProject,
+    onSuccess: () => {
+      toast.success("Project created successfully 🚀");
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      setIsCreateProjectModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Failed to create project");
+    },
+  });
+
   const totalProjects = projects?.length || 0;
+
+  const handleCreateProject = (data) => {
+    createMutate(data);
+  };
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6 md:p-8">
@@ -32,7 +54,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <button className="bg-indigo-600 hover:bg-indigo-500 transition-all px-5 py-3 rounded-2xl font-medium shadow-lg shadow-indigo-500/20">
+        <button
+          onClick={() => setIsCreateProjectModalOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-500 transition-all px-5 py-3 rounded-2xl font-medium shadow-lg shadow-indigo-500/20"
+        >
           + Create Project
         </button>
       </div>
@@ -213,6 +238,14 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {isCreateProjectModalOpen && (
+        <CreateProjectModel
+          onClose={() => setIsCreateProjectModalOpen(false)}
+          onCreate={handleCreateProject}
+          isLoading={isPending}
+        />
+      )}
     </div>
   );
 }

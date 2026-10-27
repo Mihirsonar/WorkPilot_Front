@@ -4,85 +4,74 @@ import {
   deleteProject,
   updateProject,
 } from "../../services/project.services.js";
-
 import { createProject } from "../../services/createProject.service.js";
-
 import ProjectCard from "../../components/project/ProjectCard";
 import CreateProjectModel from "../../components/project/CreateProjectModel";
-
+import JoinProjectModal from "../../components/project/JoinProjectModal";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-
 import {
   FolderKanban,
   Plus,
   LayoutGrid,
   Sparkles,
+  Loader2,
+  Link2,
 } from "lucide-react";
 
 function Projects() {
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
     useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
-  // 📦 GET PROJECTS
+  // GET PROJECTS
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
   });
 
-  // ➕ CREATE
+  // CREATE
   const { mutate: createMutate, isPending } = useMutation({
     mutationFn: createProject,
-
     onSuccess: () => {
       toast.success("Project created 🚀");
-
       queryClient.invalidateQueries({
         queryKey: ["projects"],
       });
-
       setIsCreateProjectModalOpen(false);
     },
-
     onError: (error) => {
       toast.error(
-        error?.response?.data?.message ||
-          "Something went wrong"
+        error?.response?.data?.message || "Something went wrong"
       );
     },
   });
 
-  // 🗑 DELETE
+  // DELETE
   const deleteMutation = useMutation({
     mutationFn: deleteProject,
-
     onSuccess: () => {
       toast.success("Project deleted 🗑");
-
       queryClient.invalidateQueries({
         queryKey: ["projects"],
       });
     },
-
     onError: () => {
       toast.error("Failed to delete project");
     },
   });
 
-  // ✏️ UPDATE
+  // UPDATE
   const updateMutation = useMutation({
     mutationFn: updateProject,
-
     onSuccess: () => {
       toast.success("Project updated ✏️");
-
       queryClient.invalidateQueries({
         queryKey: ["projects"],
       });
     },
-
     onError: () => {
       toast.error("Failed to update project");
     },
@@ -94,26 +83,14 @@ function Projects() {
   };
 
   const handleDelete = (id) => {
-    if (
-      confirm(
-        "Are you sure you want to delete this project?"
-      )
-    ) {
+    if (confirm("Are you sure you want to delete this project?")) {
       deleteMutation.mutate(id);
     }
   };
 
   const handleEdit = (project) => {
-    const name = prompt(
-      "Enter new project name",
-      project.name
-    );
-
-    const description = prompt(
-      "Enter new description",
-      project.description
-    );
-
+    const name = prompt("Enter new project name", project.name);
+    const description = prompt("Enter new description", project.description);
     if (!name) return;
 
     updateMutation.mutate({
@@ -122,120 +99,75 @@ function Projects() {
     });
   };
 
-  // LOADING UI
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-white">
-        <div className="h-16 w-16 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
-
-        <p className="mt-6 text-slate-400 text-lg">
-          Loading your projects...
+      <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+        <p className="mt-3 text-xs font-medium text-gray-500">
+          Loading your workspaces...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* HEADER */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        {/* Left */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="h-14 w-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/20 flex items-center justify-center">
-              <FolderKanban
-                size={28}
-                className="text-indigo-400"
-              />
-            </div>
-
-            <div>
-              <h1 className="text-4xl font-bold text-white tracking-tight">
-                Projects
-              </h1>
-
-              <p className="text-slate-400 mt-1">
-                Organize and manage all your workspaces
-              </p>
-            </div>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+            Workspaces & Projects
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Organize all your team boards, tasks, and project workflows.
+          </p>
         </div>
 
-        {/* Right */}
-        <div className="flex items-center gap-4">
-          {/* Total Projects */}
-          <div className="hidden md:flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-5 py-3">
-            <LayoutGrid
-              size={20}
-              className="text-cyan-400"
-            />
-
-            <div>
-              <p className="text-xs text-slate-400">
-                Total Projects
-              </p>
-
-              <h3 className="text-lg font-semibold text-white">
-                {projects.length}
-              </h3>
-            </div>
-          </div>
-
-          {/* Create Button */}
+        <div className="flex items-center gap-2.5">
           <button
-            className="group relative overflow-hidden bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-2xl font-medium transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:scale-[1.02]"
-            onClick={() =>
-              setIsCreateProjectModalOpen(true)
-            }
+            onClick={() => setIsJoinModalOpen(true)}
+            className="inline-flex items-center gap-2 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition hover:shadow cursor-pointer"
           >
-            <span className="relative z-10 flex items-center gap-2">
-              <Plus size={18} />
+            <Link2 size={15} />
+            <span>Join with Link</span>
+          </button>
 
-              Create Project
-            </span>
-
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+          <button
+            onClick={() => setIsCreateProjectModalOpen(true)}
+            className="inline-flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition hover:shadow cursor-pointer"
+          >
+            <Plus size={16} />
+            <span>Create Project</span>
           </button>
         </div>
       </div>
 
-      {/* FEATURE BANNER */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-500/10 p-6 md:p-8">
-        <div className="absolute top-0 right-0 h-40 w-40 bg-indigo-500/20 rounded-full blur-3xl" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles
-                size={20}
-                className="text-indigo-300"
-              />
-
-              <span className="text-indigo-300 font-medium text-sm">
-                Productivity Workspace
-              </span>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white leading-tight">
-              Build, manage & track projects faster 🚀
-            </h2>
-
-            <p className="text-slate-300 mt-3 max-w-2xl">
-              Keep your team aligned with modern
-              Kanban workflows, task tracking and
-              smart collaboration tools.
-            </p>
+      {/* FEATURE BANNER (Soft, modern, light) */}
+      <div className="bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-2">
+            <Sparkles size={12} />
+            Agile Kanban Flow
           </div>
-
-          <button className="bg-white text-indigo-700 px-5 py-3 rounded-2xl font-semibold hover:scale-[1.02] transition-all duration-300">
-            Explore Features
-          </button>
+          <h2 className="text-lg font-bold text-gray-900 tracking-tight">
+            Track sprints, coordinate tasks & deliver faster
+          </h2>
+          <p className="text-xs text-gray-500 mt-1 max-w-xl">
+            Keep every teammate aligned with intuitive drag-and-drop boards, status badges, and real-time updates.
+          </p>
         </div>
+
+        <button
+          onClick={() => setIsCreateProjectModalOpen(true)}
+          className="self-start md:self-auto px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-800 transition"
+        >
+          Add Board
+        </button>
       </div>
 
       {/* PROJECT GRID */}
       {projects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {projects.map((project) => (
             <ProjectCard
               key={project._id}
@@ -246,30 +178,20 @@ function Projects() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 rounded-3xl border border-dashed border-white/10 bg-white/[0.03]">
-          <div className="h-24 w-24 rounded-full bg-indigo-500/10 flex items-center justify-center mb-6">
-            <FolderKanban
-              size={42}
-              className="text-indigo-400"
-            />
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-4 text-gray-600">
+            <FolderKanban size={24} />
           </div>
-
-          <h2 className="text-2xl font-bold text-white">
-            No Projects Yet
-          </h2>
-
-          <p className="text-slate-400 mt-3 max-w-md text-center">
-            Start creating your first workspace and
-            organize tasks with a modern Kanban flow.
+          <h3 className="text-base font-bold text-gray-900">No projects yet</h3>
+          <p className="text-xs text-gray-500 mt-1 max-w-sm">
+            Create your first workspace to start assigning tasks and tracking team sprints.
           </p>
-
           <button
-            onClick={() =>
-              setIsCreateProjectModalOpen(true)
-            }
-            className="mt-8 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-2xl font-medium transition-all duration-300"
+            onClick={() => setIsCreateProjectModalOpen(true)}
+            className="mt-5 inline-flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition"
           >
-            Create Your First Project
+            <Plus size={15} />
+            <span>Create First Project</span>
           </button>
         </div>
       )}
@@ -277,15 +199,19 @@ function Projects() {
       {/* MODAL */}
       {isCreateProjectModalOpen && (
         <CreateProjectModel
-          onClose={() =>
-            setIsCreateProjectModalOpen(false)
-          }
+          onClose={() => setIsCreateProjectModalOpen(false)}
           onCreate={handleCreateProject}
           isLoading={isPending}
         />
       )}
+
+      {/* JOIN PROJECT MODAL */}
+      {isJoinModalOpen && (
+        <JoinProjectModal onClose={() => setIsJoinModalOpen(false)} />
+      )}
     </div>
   );
 }
+
 
 export default Projects;

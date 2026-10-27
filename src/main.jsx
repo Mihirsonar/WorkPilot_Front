@@ -14,9 +14,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       toastOptions={{
         duration: 3000,
         style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff"
+          borderRadius: "14px",
+          background: "#ffffff",
+          color: "#0f172a",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          fontSize: "13px",
+          fontWeight: "500",
         }
       }}
     />

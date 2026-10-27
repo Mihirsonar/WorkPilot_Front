@@ -1,13 +1,6 @@
-import React, {
-  useState,
-} from "react";
-
-import {
-  useNavigate,
-} from "react-router-dom";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
 import {
   MoreVertical,
   Pencil,
@@ -20,32 +13,21 @@ import {
 
 // AVATAR COLORS
 const colors = [
-  "from-indigo-500 to-violet-500",
-  "from-pink-500 to-rose-500",
-  "from-emerald-500 to-green-500",
-  "from-cyan-500 to-sky-500",
-  "from-orange-500 to-amber-500",
+  "bg-indigo-100 text-indigo-700",
+  "bg-rose-100 text-rose-700",
+  "bg-emerald-100 text-emerald-700",
+  "bg-sky-100 text-sky-700",
+  "bg-amber-100 text-amber-700",
 ];
 
-const getColor = (id) => {
+const getColor = (id = "") => {
   const hash = id
     .split("")
-    .reduce(
-      (acc, char) =>
-        acc +
-        char.charCodeAt(0),
-      0
-    );
-
-  return colors[
-    hash % colors.length
-  ];
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
 };
 
-// INITIALS
-const getInitials = (
-  name
-) =>
+const getInitials = (name = "") =>
   name
     .split(" ")
     .map((word) => word[0])
@@ -53,194 +35,116 @@ const getInitials = (
     .slice(0, 2)
     .toUpperCase();
 
-export default function ProjectCard({
-  project,
-  onEdit,
-  onDelete,
-}) {
-  const navigate =
-    useNavigate();
-
-  const [open, setOpen] =
-    useState(false);
+export default function ProjectCard({ project, onEdit, onDelete }) {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   return (
     <motion.div
-      whileHover={{
-        y: -6,
-      }}
-      transition={{
-        duration: 0.25,
-      }}
-      onClick={() =>
-        navigate(
-          `/projects/${project._id}`
-        )
-      }
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#111827] p-6 backdrop-blur-xl transition-all duration-300 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-black/30 cursor-pointer"
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.15 }}
+      onClick={() => navigate(`/projects/${project._id}`)}
+      className="group bg-white rounded-2xl border border-gray-200/80 p-5 shadow-xs hover:shadow-md hover:border-gray-300 cursor-pointer transition select-none flex flex-col justify-between"
     >
-      {/* Glow */}
-      <div className="absolute top-0 right-0 h-40 w-40 bg-indigo-500/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
       {/* TOP */}
-      <div className="relative z-10 flex items-start justify-between gap-4">
-        {/* LEFT */}
-        <div className="flex items-start gap-4">
-          {/* ICON */}
-          <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-            <FolderKanban
-              size={28}
-              className="text-indigo-400"
-            />
-          </div>
-
-          {/* INFO */}
-          <div>
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium mb-3">
-              <Sparkles
-                size={12}
-              />
-
-              Active Project
+      <div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gray-100 text-gray-800 flex items-center justify-center shrink-0">
+              <FolderKanban size={20} />
             </div>
-
-            {/* NAME */}
-            <h3 className="text-2xl font-bold text-white leading-tight">
-              {project.name}
-            </h3>
-
-            {/* DESCRIPTION */}
-            <p className="text-slate-400 text-sm mt-3 leading-relaxed line-clamp-3 max-w-[320px]">
-              {project.description ||
-                "No description available for this workspace."}
-            </p>
+            <div>
+              <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                <Sparkles size={11} /> Active
+              </div>
+              <h3 className="text-base font-bold text-gray-900 mt-1 leading-snug group-hover:text-black">
+                {project.name}
+              </h3>
+            </div>
           </div>
-        </div>
 
-        {/* MENU */}
-        <div className="relative">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-
-              setOpen(
-                (prev) => !prev
-              );
-            }}
-            className="h-11 w-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300"
-          >
-            <MoreVertical
-              size={18}
-            />
-          </button>
-
-          {/* DROPDOWN */}
-          {open && (
-            <div
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-              className="absolute top-14 right-0 w-44 rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl overflow-hidden z-20"
+          {/* MENU */}
+          <div className="relative">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((prev) => !prev);
+              }}
+              className="h-8 w-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center transition"
             >
-              {/* EDIT */}
-              <button
-                onClick={() => {
-                  setOpen(false);
+              <MoreVertical size={16} />
+            </button>
 
-                  onEdit(
-                    project
-                  );
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:bg-white/5 transition-all duration-300"
+            {/* DROPDOWN */}
+            {open && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-9 right-0 w-40 rounded-xl border border-gray-200 bg-white shadow-xl overflow-hidden z-20 p-1"
               >
-                <Pencil
-                  size={16}
-                  className="text-indigo-400"
-                />
-
-                Edit Project
-              </button>
-
-              {/* DELETE */}
-              <button
-                onClick={() => {
-                  setOpen(false);
-
-                  onDelete(
-                    project._id
-                  );
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-all duration-300"
-              >
-                <Trash2
-                  size={16}
-                />
-
-                Delete Project
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* BOTTOM */}
-      <div className="relative z-10 flex items-center justify-between mt-8">
-        {/* MEMBERS */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Users
-              size={16}
-              className="text-slate-500"
-            />
-
-            <span className="text-sm text-slate-400">
-              Team Members
-            </span>
-          </div>
-
-          <div className="flex -space-x-3">
-            {project.members
-              ?.slice(0, 4)
-              .map((member) => (
-                <div
-                  key={
-                    member._id
-                  }
-                  title={
-                    member.username
-                  }
-                  className={`h-11 w-11 rounded-full bg-gradient-to-br ${getColor(
-                    member._id
-                  )} text-white flex items-center justify-center text-sm font-semibold border-2 border-[#111827] shadow-lg`}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    onEdit(project);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition"
                 >
-                  {getInitials(
-                    member.username
-                  )}
-                </div>
-              ))}
+                  <Pencil size={14} className="text-gray-500" />
+                  Edit Project
+                </button>
 
-            {/* EXTRA MEMBERS */}
-            {project.totalMembers >
-              4 && (
-              <div className="h-11 w-11 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-semibold border-2 border-[#111827]">
-                +
-                {project.totalMembers -
-                  4}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    onDelete(project._id);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                >
+                  <Trash2 size={14} className="text-rose-500" />
+                  Delete Project
+                </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* OPEN BUTTON */}
-        <div className="flex items-center gap-2 text-indigo-300 font-medium group-hover:translate-x-1 transition-all duration-300">
-          <span className="text-sm">
-            Open
-          </span>
+        {/* DESCRIPTION */}
+        <p className="text-xs text-gray-500 mt-3 line-clamp-2 leading-relaxed">
+          {project.description || "No description provided for this workspace."}
+        </p>
+      </div>
 
-          <ArrowUpRight
-            size={18}
-          />
+      {/* BOTTOM */}
+      <div className="flex items-center justify-between mt-5 pt-3 border-t border-gray-100">
+        {/* TEAM MEMBERS */}
+        <div className="flex items-center gap-2">
+          <div className="flex -space-x-2">
+            {project.members?.slice(0, 3).map((member) => (
+              <div
+                key={member._id}
+                title={member.username}
+                className={`h-7 w-7 rounded-full ${getColor(
+                  member._id
+                )} flex items-center justify-center text-[10px] font-bold border-2 border-white shadow-xs`}
+              >
+                {getInitials(member.username)}
+              </div>
+            ))}
+
+            {project.totalMembers > 3 && (
+              <div className="h-7 w-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-[10px] font-bold border-2 border-white shadow-xs">
+                +{project.totalMembers - 3}
+              </div>
+            )}
+          </div>
+          <span className="text-[11px] text-gray-400 font-medium">
+            {project.members?.length || 0} members
+          </span>
+        </div>
+
+        {/* OPEN LINK */}
+        <div className="flex items-center gap-1 text-xs font-semibold text-gray-700 group-hover:text-black">
+          <span>Open board</span>
+          <ArrowUpRight size={14} />
         </div>
       </div>
     </motion.div>

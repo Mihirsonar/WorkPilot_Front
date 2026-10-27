@@ -10,13 +10,15 @@ import ProtectedRoute from "../components/project/ProtectedRoute";
 import ProjectDetails from "../pages/projects/projectDetails";
 import CreateProjectModel from "../components/project/CreateProjectModel";
 import SettingsPage from "../pages/SettingsPage";
+import AcceptInvite from "../pages/invite/AcceptInvite";
 export default function Router(){
     return(
         <BrowserRouter>
         <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register />} />
-            <Route path="/settings" element={<SettingsPage />} />   
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/invite/:projectId/:inviteToken" element={<ProtectedRoute><AcceptInvite /></ProtectedRoute>} />   
             <Route element={<ProtectedRoute><Layout/></ProtectedRoute>}>
         <Route
         path="/"
